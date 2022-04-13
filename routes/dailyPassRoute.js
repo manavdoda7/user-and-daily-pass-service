@@ -2,7 +2,7 @@ const checkAuth = require('../middlewares/checkAuth')
 const DailyPass = require('../models/dailyPass')
 const router = require('express').Router()
 
-router.get('/', checkAuth, async(req, res)=>{
+router.post('/', checkAuth, async(req, res)=>{
     console.log('GET /api/dailypass request')
     let d = new Date()
     let username = req.userData.username
@@ -18,6 +18,22 @@ router.get('/', checkAuth, async(req, res)=>{
         return res.status(408).json({success:false, message:'Please try again after sometime.'})
     }
     return res.status(200).json({success:true, message:'Success.'})
+})
+
+router.post('/:username', async(req, res)=> {
+    console.log('POST /api/dailypass/username request')
+    username = req.params.username
+    // console.log(req.body);
+    const {date} = req.body
+    try {
+        count = await DailyPass.fetchCount(username, date)
+        count = count[0]
+        count = count[0].count
+        return res.status(200).json({success:true, count})
+    } catch(err) {
+        console.log('Error in fetching count', err);
+        return res.send(408).json({success:false, message:'Please try again after sometime.'})
+    }
 })
 
 module.exports = router

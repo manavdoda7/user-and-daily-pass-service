@@ -2,6 +2,8 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const url  = require('../url')
+const axios = require('axios')
 
 const router = require('express').Router()
 
@@ -28,8 +30,9 @@ router.post('/signup', async(req, res)=>{
 router.post('/signin', async(req, res)=>{
     console.log('POST /api/authenticate/login request');
     const {username, password} = req.body
+    let user
     try {
-        let user = await User.fetchUser(username)
+        user = await User.fetchUser(username)
         user = user[0]
         if(user.length) user = user[0]
         else return res.status(403).json({success:false, message:'Invalid username or password.'})
@@ -38,15 +41,7 @@ router.post('/signin', async(req, res)=>{
                 console.log('bcrypt Error', bcryptErr);
                 return res.status(408).json({success:false, message:'Please try again after sometime.'})
             }
-            if(result) {
-                const token = jwt.sign({
-                    username: user.username,
-                }, process.env.JWT_SECRET, {
-                    expiresIn: '2h'
-                })
-                // console.log('Auth successful', user, token);
-                return res.status(202).json({success:true, message:'Authenication successfull.', token:token})
-            } else {
+            if(!result) {
                 return res.status(403).json({success:false, message:'Invalid username or password.'})
             }
         })
@@ -54,6 +49,22 @@ router.post('/signin', async(req, res)=>{
         console.log('Error in login ', err);
         return res.status(408).json({success:false, message:'Please try again after sometime.'})
     }
+    const token = jwt.sign({
+            username: user.username,
+        }, 
+        process.env.JWT_SECRET, {
+            expiresIn: '2h'
+        })
+    // console.log(url);
+    await axios.post(url+'api/dailypass', {"body": ""}, {
+        headers: {
+            authorization: 'Bearer '+token
+        }
+    })
+    .then((response)=>{
+        console.log(response);
+    })
+    return res.status(202).json({success:true, message:'Authenication successfull.', token:token})
 })
 
 module.exports = router

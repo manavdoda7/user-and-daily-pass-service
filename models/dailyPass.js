@@ -11,6 +11,9 @@ class DailyPass {
     async fetch() {
         return db.promise().query(`select * from session where username = '${this.username}' and session = '${this.date}'`)
     }
+    static async fetchCount(username, date) {
+        return db.promise().query(`select count(session) as count from session where session>='${date}' and username='${username}';`)
+    }
 }
 
 module.exports = DailyPass

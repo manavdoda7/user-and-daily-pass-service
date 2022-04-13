@@ -10,6 +10,6 @@ let createSession = "create table if not exists session(" +
                 "username varchar(75)," +
                 "session varchar(15)," +
                 "primary key(username, session)," +
-                "foreign key (username) references user(username));"
+                "foreign key (username) references user(username) on delete cascade on update cascade);"
 
 module.exports = {createUser, createSession}
