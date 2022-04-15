@@ -3,13 +3,19 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const url  = require('../url')
-const axios = require('axios')
+const axios = require('axios');
+const UsernameValidator = require('../validators/usernameValidator');
+const nameValidator = require('../validators/nameValidator');
+const emailValidator = require('../validators/emailValidator')
+const phoneValidator = require('../validators/mobileValidator')
+const passwordValidator = require('../validators/passwordValidator')
 
 const router = require('express').Router()
 
 router.post('/signup', async(req, res)=>{
     console.log('POST /api/authenticate/signup request');
     const {username, fName, lName, email, phone, password} = req.body
+    if(UsernameValidator(username)==0 || nameValidator(fName)==0 || nameValidator(lName)==0 || emailValidator(email)==0 || phoneValidator(phone)==0 || passwordValidator(password)==0) return res.status(403).json({success:false, message:'One or more feild values is/are missing or incorrect.'})
     try {
         let user = await User.checkDuplicateUsername(username)
         if(user[0].length) return res.status(403).json({success:false, message:'Username already taken.'})

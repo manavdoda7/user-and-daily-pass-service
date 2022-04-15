@@ -1,5 +1,6 @@
 const checkAuth = require('../middlewares/checkAuth')
 const DailyPass = require('../models/dailyPass')
+const dateValidator = require('../validators/dateValidator')
 const router = require('express').Router()
 
 router.post('/', checkAuth, async(req, res)=>{
@@ -25,6 +26,7 @@ router.post('/:username', async(req, res)=> {
     username = req.params.username
     // console.log(req.body);
     const {date} = req.body
+    if(dateValidator(date)==0) return res.status(403).json({success:false, message:'Date format should be YYYY/MM/DD'})
     try {
         count = await DailyPass.fetchCount(username, date)
         count = count[0]
