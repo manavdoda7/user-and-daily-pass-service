@@ -1,15 +1,16 @@
 const jwt = require('jsonwebtoken')
 const { fetchUser } = require('../models/user')
-const db = require('./dbconnection')
+const db = require('./dbconnection').db_user
 require('dotenv').config()
 
 const checkAuth = async(req, res, next) => {
     let token
     try {
+        if(req.headers.authorization==undefined) return res.status(403).json({success:false, message:'Token not found'})
         token = req.headers.authorization.split(" ")[1]
     } catch(err) {
         console.log('Token fetch error', err);
-        res.status(404).json({success:false, error:"token not found"})
+        return res.status(403).json({success:false, message:"token not found"})
     }
     // console.log(token);
     try {

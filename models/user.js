@@ -1,4 +1,4 @@
-const db = require('../middlewares/dbconnection')
+const db = require('../middlewares/dbconnection').db_user
 class User {
     constructor(username, fName, lName, email, phone, password) {
         this.username = username

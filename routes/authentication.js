@@ -12,9 +12,75 @@ const passwordValidator = require('../validators/passwordValidator')
 
 const router = require('express').Router()
 
+
+/**
+ * @swagger
+ * /api/authenticate/signup:
+ *  post:
+ *      tags: ["User Authentication Routes"]
+ *      summary: "Route for registering a new user."
+ *      description: "Register for a new user here."
+ *      parameters: []
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          username:
+ *                              type: string
+ *                          fName:
+ *                              type: string
+ *                          lName:
+ *                              type: string
+ *                          email:
+ *                              type: string
+ *                          phone:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *      responses: 
+ *          '201':
+ *              description: User Registered
+ *          '403':
+ *              description: Incorrect/Duplicate information entered.
+ *          '408':
+ *              description: Request timeout error.
+ *      security:
+ *          bearerAuth: []
+ * /api/authenticate/signin:
+ *  post:
+ *      tags: ["User Authentication Routes"]
+ *      summary: "Route for user login."
+ *      description: "Enter email and password to login"
+ *      parameters: []
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          username:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *      responses: 
+ *          '202':
+ *              description: User Logged In(Returns a JWT token)
+ *          '403':
+ *              description: Incorrect/missing credentials.
+ *          '408':
+ *              description: Request timeout error.
+ *      security:
+ *          bearerAuth: []
+ */
+
 router.post('/signup', async(req, res)=>{
     console.log('POST /api/authenticate/signup request');
     const {username, fName, lName, email, phone, password} = req.body
+    // console.log(req.body);
     if(UsernameValidator(username)==0 || nameValidator(fName)==0 || nameValidator(lName)==0 || emailValidator(email)==0 || phoneValidator(phone)==0 || passwordValidator(password)==0) return res.status(403).json({success:false, message:'One or more feild values is/are missing or incorrect.'})
     try {
         let user = await User.checkDuplicateUsername(username)
@@ -36,6 +102,7 @@ router.post('/signup', async(req, res)=>{
 router.post('/signin', async(req, res)=>{
     console.log('POST /api/authenticate/login request');
     const {username, password} = req.body
+    // console.log(req.body);
     let user
     try {
         user = await User.fetchUser(username)

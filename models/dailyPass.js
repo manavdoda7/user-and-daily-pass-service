@@ -1,4 +1,4 @@
-const db = require("../middlewares/dbconnection")
+const db = require("../middlewares/dbconnection").db_dailypass
 
 class DailyPass {
     constructor(username, date) {
