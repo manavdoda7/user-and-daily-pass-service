@@ -22,10 +22,10 @@ const options = {
         },
         servers: [
             {
-                url: "http://localhost:5001",
+                url: "https://user-and-daily-pass.herokuapp.com/",
             },
             {
-                url: "https://user-and-daily-pass.herokuapp.com/",
+                url: "http://localhost:5001",
             }
         ],
         components: {
@@ -46,7 +46,7 @@ const options = {
     apis: ["./routes/*.js"],
 };
 const swaggerSpecs = swaggerJsdoc(options);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 
 app.get('/', (req, res)=>{
