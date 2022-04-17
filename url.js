@@ -1,2 +1,2 @@
-const url = 'http://localhost:5001/';
+const url = 'https://user-and-daily-pass.herokuapp.com/';
 module.exports =  url
