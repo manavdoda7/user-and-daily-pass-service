@@ -46,12 +46,12 @@ const options = {
     apis: ["./routes/*.js"],
 };
 const swaggerSpecs = swaggerJsdoc(options);
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
 
 app.get('/', (req, res)=>{
     console.log('GET / request');
-    res.status(200).json({success: true, message: 'Welcome to the backend.'})
+    return res.redirect('/api-docs')
 })
 
 app.use('/api/authenticate', require('./routes/authentication'))
